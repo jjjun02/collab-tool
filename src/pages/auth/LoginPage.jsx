@@ -17,8 +17,8 @@ export default function LoginPage() {
     try {
       const res = await login(data)
       // 응답 구조: { status, data: { accessToken, userId, name } }
-      const { accessToken, userId, name } = res.data.data
-      setAuth({ userId, name }, accessToken)
+      const { accessToken, userId, name, role } = res.data   // ← 한 번만
+      setAuth({ userId, name, role }, accessToken)
       navigate('/projects')
     } catch (error) {
       const status = error.response?.status

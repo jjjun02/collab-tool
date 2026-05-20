@@ -14,10 +14,15 @@ export default function ProjectCreatePage() {
     setLoading(true)
     try {
       const res = await createProject(data)
-      const created = res.data
-      const id = created.projectId || created.project_id || created.id
-      toast.success(`프로젝트 생성 완료! 초대코드: ${created.inviteCode || created.invite_code}`, { duration: 5000 })
-      navigate(`/projects/${id}/settings`)
+
+      console.log('🔥 res:', res)
+      console.log('🔥 res.data:', res.data)
+      console.log('🔥 typeof res.data:', typeof res.data)
+
+      // API-P-001 응답: { projectId, name, inviteCode, createdAt }
+      const { projectId, inviteCode } = res.data
+      toast.success(`프로젝트 생성 완료! 초대코드: ${inviteCode}`, { duration: 5000 })
+      navigate(`/projects/${projectId}/settings`)
     } catch (error) {
       toast.error(getErrorMessage(error))
     } finally {

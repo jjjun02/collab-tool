@@ -17,17 +17,22 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// 응답 인터셉터: 공통 에러 처리
+// 응답 인터셉터: 공통 에러 처리 + data 자동 추출
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    // 백엔드 응답 포맷: { status: "success", data: {...} }
+    // → res.data를 data 내용으로 자동 치환
+    if (res.data && res.data.status === 'success' && res.data.data !== undefined) {
+      res.data = res.data.data
+    }
+    return res
+  },
   (error) => {
     const status = error.response?.status
     const message = error.response?.data?.message
 
     if (status === 401) {
-      // 토큰 만료 또는 인증 실패
       localStorage.removeItem('accessToken')
-      // 로그인/회원가입 페이지가 아니면 redirect
       if (!['/login', '/register'].includes(window.location.pathname)) {
         toast.error('로그인이 필요합니다.')
         window.location.href = '/login'
